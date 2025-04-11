@@ -44,7 +44,7 @@ require("lazy").setup({
     priority = 1000,
     config = function()
       require("catppuccin").setup({
-        flavour = "latte",
+        flavour = "frappe",
         transparent_background = true,
       })
 
@@ -60,7 +60,11 @@ require("lazy").setup({
       "nvim-tree/nvim-web-devicons",
     },
     config = function()
-      require("nvim-tree").setup {}
+      api = require("nvim-tree.api")
+
+      vim.keymap.set('n', '<leader>tt', api.tree.toggle, {})
+
+      require("nvim-tree").setup({})
     end,
   },
 
@@ -87,10 +91,26 @@ require("lazy").setup({
       vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 
+      vim.keymap.set('n', 'gi', builtin.lsp_implementations, {})
       vim.keymap.set('n', 'gd', builtin.lsp_definitions, {})
       vim.keymap.set('n', 'gD', builtin.lsp_type_definitions, {})
       vim.keymap.set('n', 'gr', builtin.lsp_references, {})
-    end
+    end,
+  },
+
+  {
+    "ibhagwan/fzf-lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {},
+    config = function()
+      vim.api.nvim_set_keymap("n", "<C-\\>", [[<Cmd>lua require"fzf-lua".buffers()<CR>]], {})
+      vim.api.nvim_set_keymap("n", "<C-k>", [[<Cmd>lua require"fzf-lua".builtin()<CR>]], {})
+      vim.api.nvim_set_keymap("n", "<C-p>", [[<Cmd>lua require"fzf-lua".files()<CR>]], {})
+      vim.api.nvim_set_keymap("n", "<C-l>", [[<Cmd>lua require"fzf-lua".live_grep_glob()<CR>]], {})
+      vim.api.nvim_set_keymap("n", "<C-g>", [[<Cmd>lua require"fzf-lua".grep_project()<CR>]], {})
+      require("fzf-lua").setup({
+      })
+    end,
   },
 
   {
@@ -184,6 +204,16 @@ require("lazy").setup({
           },
         },
       }
+    end,
+  },
+
+  {
+    "lervag/vimtex",
+    lazy = false,     -- we don't want to lazy load VimTeX
+    -- tag = "v2.15", -- uncomment to pin to a specific release
+    init = function()
+      -- VimTeX configuration goes here, e.g.
+      vim.g.vimtex_view_method = "zathura"
     end,
   },
 })
