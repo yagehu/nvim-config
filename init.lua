@@ -99,6 +99,13 @@ require("lazy").setup({
   },
 
   {
+    "nvim-telescope/telescope-ui-select.nvim",
+    config = function()
+      require("telescope").load_extension("ui-select")
+    end,
+  },
+
+  {
     "ibhagwan/fzf-lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {},
@@ -133,6 +140,7 @@ require("lazy").setup({
     config = function()
       local lspconfig = require("lspconfig")
 
+      vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, {});
       vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, {});
       vim.keymap.set("n", "<leader>ln", vim.diagnostic.goto_next, {});
       vim.keymap.set("n", "<leader>lp", vim.diagnostic.goto_prev, {});
