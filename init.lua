@@ -201,6 +201,15 @@ require("lazy").setup({
   },
 
   {
+    "numToStr/Comment.nvim",
+    opts = {
+    },
+    config = function()
+      require('Comment').setup()
+    end,
+  },
+
+  {
     "mrcjkb/rustaceanvim",
     config = function()
       vim.lsp.inlay_hint.enable(true)
