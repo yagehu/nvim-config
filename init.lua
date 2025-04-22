@@ -239,4 +239,8 @@ require("lazy").setup({
       end
     end,
   },
+
+  {
+    "whonore/Coqtail",
+  },
 })
