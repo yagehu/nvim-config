@@ -9,6 +9,8 @@ vim.g.mapleader = " "
 -- Local config
 vim.o.exrc = true
 
+vim.opt.clipboard = "unnamedplus"
+
 vim.opt.expandtab = true
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
