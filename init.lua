@@ -213,10 +213,21 @@ require("lazy").setup({
 
   {
     "mrcjkb/rustaceanvim",
+    version = "^6",
+    lazy = false,
     config = function()
       vim.lsp.inlay_hint.enable(true)
       vim.g.rustaceanvim = {
         server = {
+          on_attach = function(client, bufnr)
+            local format_sync_grp = vim.api.nvim_create_augroup("RustaceanFormat", {})
+
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              buffer = bufnr,
+              callback = function() vim.lsp.buf.format() end,
+              group = format_sync_grp,
+            })
+          end,
           default_settings = {
             ["rust-analyzer"] = {
               rustfmt = {
