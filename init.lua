@@ -41,6 +41,15 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
+    "williamboman/mason.nvim",
+    opts = {
+      ensure_installed = {
+        "tinymist",
+      },
+    },
+  },
+
+  {
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
@@ -158,7 +167,21 @@ require("lazy").setup({
           },
         },
       })
+
+      lspconfig.tinymist.setup({
+        settings = {
+          formatterMode = "typstyle",
+          exportPdf = "onType",
+        },
+      })
     end,
+  },
+
+  {
+    'chomosuke/typst-preview.nvim',
+    lazy = false, -- or ft = 'typst'
+    version = '1.*',
+    opts = {}, -- lazy.nvim will implicitly calls `setup {}`
   },
 
   {
@@ -233,6 +256,9 @@ require("lazy").setup({
               rustfmt = {
                 extraArgs = { "+nightly" },
               },
+              inlayHints = {
+                chainingHints = { enable = false },
+              },
             },
           },
         },
@@ -255,5 +281,13 @@ require("lazy").setup({
 
   {
     "whonore/Coqtail",
+  },
+
+  {
+    "quarto-dev/quarto-nvim",
+    dependencies = {
+      "jmbuhr/otter.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
   },
 })
