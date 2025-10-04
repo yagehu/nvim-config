@@ -26,6 +26,55 @@ vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.wo.number = true
 vim.wo.relativenumber = true
 
+if vim.g.neovide then
+  vim.g.neovide_scale_factor = 1.5
+  vim.keymap.set(
+    { "n", "v" },
+    "<C-+>",
+    ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>"
+  )
+  vim.keymap.set(
+    { "n", "v" },
+    "<C-->",
+    ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>"
+  )
+  vim.keymap.set(
+    { "n", "v" },
+    "<C-0>",
+    ":lua vim.g.neovide_scale_factor = 1<CR>"
+  )
+
+  vim.g.neovide_theme = "light"
+  vim.g.neovide_opacity = 0.85
+
+  local action = {
+    ["copy"] = "<C-c>",
+    ["paste"] = "<C-v>",
+  }
+
+  if vim.loop.os_uname().sysname == "Darwin" then
+    action = {
+      ["copy"] = "<D-c>",
+      ["paste"] = "<D-v>",
+    }
+  end
+
+  print(action)
+
+  vim.keymap.set(
+    {"n", "v", "s", "x", "o", "i", "l", "c", "t"},
+    action["copy"],
+    '"+y',
+    { noremap = true, silent = true }
+  )
+  vim.keymap.set(
+    {"n", "v", "s", "x", "o", "i", "l", "c", "t"},
+    action["paste"],
+    function() vim.api.nvim_paste(vim.fn.getreg("+"), true, -1) end,
+    { noremap = true, silent = true }
+  )
+end
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   vim.fn.system({
@@ -289,5 +338,14 @@ require("lazy").setup({
       "jmbuhr/otter.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
+  },
+
+  -- Markdown preview
+  {
+    "OXY2DEV/markview.nvim",
+    lazy = false,
+
+    -- For `nvim-treesitter` users.
+    priority = 49,
   },
 })
