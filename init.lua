@@ -48,8 +48,8 @@ if vim.g.neovide then
   vim.g.neovide_opacity = 0.85
 
   local action = {
-    ["copy"] = "<C-c>",
-    ["paste"] = "<C-v>",
+    ["copy"] = "<C-S-c>",
+    ["paste"] = "<C-S-v>",
   }
 
   if vim.loop.os_uname().sysname == "Darwin" then
@@ -231,6 +231,24 @@ require("lazy").setup({
     lazy = false, -- or ft = 'typst'
     version = '1.*',
     opts = {}, -- lazy.nvim will implicitly calls `setup {}`
+  },
+
+  {
+    "ojroques/nvim-osc52",
+    config = function()
+      function copy()
+        if vim.v.event.operator == 'y' and vim.v.event.regname == '+' then
+          require('osc52').copy_register('+')
+        end
+      end
+
+      vim.api.nvim_create_autocmd('TextYankPost', { callback = copy })
+
+      vim.opt.clipboard = 'unnamedplus'
+      vim.keymap.set('n', '<leader>c', require('osc52').copy_operator, { expr = true })
+      vim.keymap.set('n', '<leader>cc', '<leader>c_', { remap = true })
+      vim.keymap.set('x', '<leader>c', require('osc52').copy_visual)
+    end,
   },
 
   {
