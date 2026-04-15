@@ -10,6 +10,7 @@ vim.g.mapleader = " "
 vim.o.exrc = true
 
 vim.opt.clipboard = "unnamedplus"
+vim.api.nvim_set_option("clipboard","unnamed")
 
 vim.opt.expandtab = true
 vim.opt.softtabstop = 4
@@ -58,8 +59,6 @@ if vim.g.neovide then
       ["paste"] = "<D-v>",
     }
   end
-
-  print(action)
 
   vim.keymap.set(
     {"n", "v", "s", "x", "o", "i", "l", "c", "t"},
@@ -151,7 +150,9 @@ require("lazy").setup({
       vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 
-      vim.keymap.set('n', 'gi', builtin.lsp_implementations, {})
+      vim.keymap.set('n', 'gi', builtin.lsp_implementations, {
+        desc = "Goto Definition",
+      })
       vim.keymap.set('n', 'gd', builtin.lsp_definitions, {})
       vim.keymap.set('n', 'gD', builtin.lsp_type_definitions, {})
       vim.keymap.set('n', 'gr', builtin.lsp_references, {})
@@ -198,14 +199,12 @@ require("lazy").setup({
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local lspconfig = require("lspconfig")
-
       vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, {});
       vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, {});
       vim.keymap.set("n", "<leader>ln", vim.diagnostic.goto_next, {});
       vim.keymap.set("n", "<leader>lp", vim.diagnostic.goto_prev, {});
 
-      lspconfig.gopls.setup({
+      vim.lsp.config("gopls", {
         settings = {
           gopls = {
             analyses = {
@@ -217,10 +216,21 @@ require("lazy").setup({
         },
       })
 
-      lspconfig.tinymist.setup({
+      vim.lsp.config("tinymist", {
         settings = {
           formatterMode = "typstyle",
           exportPdf = "onType",
+        },
+      })
+
+      vim.lsp.enable("rust_analyzer")
+      vim.lsp.config('rust_analyzer', {
+        settings = {
+          ["rust-analyzer"] = {
+            rustfmt = {
+                extraArgs = { "+nightly", },
+            },
+          },
         },
       })
     end,
@@ -301,37 +311,37 @@ require("lazy").setup({
     end,
   },
 
-  {
-    "mrcjkb/rustaceanvim",
-    version = "^6",
-    lazy = false,
-    config = function()
-      vim.lsp.inlay_hint.enable(true)
-      vim.g.rustaceanvim = {
-        server = {
-          on_attach = function(client, bufnr)
-            local format_sync_grp = vim.api.nvim_create_augroup("RustaceanFormat", {})
-
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              buffer = bufnr,
-              callback = function() vim.lsp.buf.format() end,
-              group = format_sync_grp,
-            })
-          end,
-          default_settings = {
-            ["rust-analyzer"] = {
-              rustfmt = {
-                extraArgs = { "+nightly" },
-              },
-              inlayHints = {
-                chainingHints = { enable = false },
-              },
-            },
-          },
-        },
-      }
-    end,
-  },
+  -- {
+  --   "mrcjkb/rustaceanvim",
+  --   version = "^6",
+  --   lazy = false,
+  --   config = function()
+  --     vim.lsp.inlay_hint.enable(true)
+  --     vim.g.rustaceanvim = {
+  --       server = {
+  --         on_attach = function(client, bufnr)
+  --           local format_sync_grp = vim.api.nvim_create_augroup("RustaceanFormat", {})
+  --
+  --           vim.api.nvim_create_autocmd("BufWritePre", {
+  --             buffer = bufnr,
+  --             callback = function() vim.lsp.buf.format() end,
+  --             group = format_sync_grp,
+  --           })
+  --         end,
+  --         default_settings = {
+  --           ["rust-analyzer"] = {
+  --             rustfmt = {
+  --               extraArgs = { "+nightly" },
+  --             },
+  --             inlayHints = {
+  --               chainingHints = { enable = false },
+  --             },
+  --           },
+  --         },
+  --       },
+  --     }
+  --   end,
+  -- },
 
   {
     "lervag/vimtex",
@@ -365,5 +375,9 @@ require("lazy").setup({
 
     -- For `nvim-treesitter` users.
     priority = 49,
+
+    opts = {
+      typst = { enable = false },
+    },
   },
 })
